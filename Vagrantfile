@@ -19,12 +19,15 @@ $brdg_int = "Intel PRO/1000 MT Desktop (82540EM)"        # Configure to your env
 
 Vagrant.configure("2") do |config|
     config.vm.define "k8s-master" do |k8sm|
-        k8sm.vm.box = "generic/debian10"
+        k8sm.vm.box = "bento/ubuntu-22.04" # Default generic/debian10
         k8sm.vm.hostname = "k8s-master"
         k8sm.vm.network "public_network", bridge: "#{$brdg_int}" 
         k8sm.vm.provider "virtualbox" do |v| 
             v.memory    = 3048
             v.name      = "k8s-master"
+        k8sm.vm.provision "shell",
+            run: "always",
+            inline: "apt-get install net-tools"
         k8sm.vm.provision "shell",
             run: "always",
             inline: "route del default"    
